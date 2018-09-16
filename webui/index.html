@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Pi Mediacenter Controls</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="js/fastajax.js"></script>
+    <script src="js/vue.js"></script>
+    <script src="js/logic.js"></script>
+</head>
+<body>
+<div id="container">
+    <div class="view" v-if="view=='index'">
+        <div class="block"><h1>Player</h1></div>
+        <div class="block" v-if="!playing_file">Ничего не воспроизводится</div>
+        <div class="block" v-if="playing_file">{{playing_file}}</div>
+        <div class="block" v-if="player_state">
+            <div class="control" id="playbutton" v-if="playing_file" v-on:click="switchPause">
+                <div v-if="paused">&#9654;</div>
+                <div v-if="!paused">&#9612;&#9612;</div>
+            </div>
+            <div class="control position">
+                <p>Позиция: <span>{{Math.round(Number(position))}}</span></p>
+                <p><input type="range" min="-60" max="60" step="1" value="0" v-on:change="setOffset"></p>
+            </div>
+            <div class="control volume">
+                <p>Звук <input type="range" min="0" max="100" step="1" v-model:value="volume" v-on:change="setVolume"></p>
+            </div>
+            <div class="block audiosub">
+                <div class="next_sub" v-on:click="nextSubtitles">
+                    <p>Следующие<br>субтитры</p>
+                </div>
+                <div class="next_audio" v-on:click="nextAudio">
+                    <p>Следующая<br>аудиодорожка</p>
+                </div>
+            </div>
+        </div>
+        <div class="block" v-on:click="updateStatus()">Обновить</div>
+        <div class="block" v-on:click="switchView('navigation')">
+            Выбрать файл
+        </div>
+    </div>
+    <div class="view" v-if="view=='navigation'">
+        <div class="block">
+            <h1>Файлы</h1>
+            <div v-if="nav_root==-1">
+                <div class="nav-up" v-on:click="switchView('index')"><--</div>
+                <div class="folder"
+                     v-for="(name, idx) in nav_roots"
+                     v-on:click="setRoot(idx)">
+                    {{name}}
+                </div>
+            </div>
+            <div v-else="">
+                <div class="nav-up" v-on:click="navUp()"><--</div>
+                <div class="folder"
+                     v-for="folder in nav_folders"
+                     v-on:click="getFolderContains(folder)">
+                    {{folder}}
+                </div>
+            </div>
+            <div class="file" v-for="file in nav_files" v-if="nav_root!=-1" v-on:click="playFile(file)">
+                {{file}}
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var body_vue = new Vue(vuedata)
+</script>
+</body>
+</html>

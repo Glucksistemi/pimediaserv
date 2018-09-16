@@ -1,0 +1,7 @@
+{
+  "pause": {
+    "cmd": "pause",
+    "format": false,
+    "output": false
+  }
+}
