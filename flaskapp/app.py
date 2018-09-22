@@ -3,25 +3,30 @@ import json
 import fsselector
 from tcpclient import send_request
 from decorators import json_response
-from config import TCP_PORT, TCP_HOST, ALLOW_CORS, ALLOW_DAEMON_KILL
-from flask_cors import CORS
+from config import Config
 import re
 from commands import get_command_object, PropertyHandler, get_property
 from werkzeug.contrib.fixers import ProxyFix
 
+config = Config
+
 app = Flask(__name__)
-if ALLOW_CORS:
+# adding CORS headers for dev environments
+if config.allow_cors:
+    from flask_cors import CORS
     CORS(app)
 app.wsgi_app = ProxyFix(app.wsgi_app)
+
 
 def error(error_data):
     return {'error': True, 'error_data': error_data}
 
 
 def tcp(request, need_answer = False):
-    return send_request(TCP_HOST, TCP_PORT, request, need_answer)
+    return send_request(config.tcp_host, config.tcp_port, request, need_answer)
 
 
+# TODO: fix this, remove or replace with something, I dunno yet
 @app.route('/', methods=['GET'])
 def index():
     return 'hello, '+request.args.get('name','')+'!'
@@ -98,6 +103,6 @@ def quit():
 @app.route('/killd')
 @json_response
 def kill_daemon():
-    if not ALLOW_DAEMON_KILL:
+    if not config.allow_daemon_kill:
         return {'error': True, 'error_data': 'daemon killing is not allowed'}
     return json.loads(tcp('_killd',True))

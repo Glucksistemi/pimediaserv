@@ -1,0 +1,38 @@
+{
+  "tcp": {
+    "host": "localhost",
+    "port": 9801
+  },
+  "daemon": {
+    "mplayer_command_string": "mplayer {0} -slave -quiet 2>/dev/null",
+    "frequency": 0.01
+  },
+  "application": {
+    "allow_cors": true,
+    "allow_daemon_kill": true
+  },
+  "allowed_commands": {
+    "simple_commands": [
+      "pause",
+      "sub_select",
+      "switch_audio",
+      "mute",
+      "vo_fullscreen",
+      "quit"
+    ],
+    "valued_commands": ["volume", "loop", "seek"],
+    "properties": ["volume", "path", "filename", "length", "percent_pos", "time_pos", "pause"]
+  },
+  "library": {
+    "content_paths": [
+      {
+        "name": "Видео",
+        "path": "/home/gluck/Видео"
+      },
+      {
+        "name": "Музыка",
+        "path": "/home/gluck/Музыка"
+      }
+    ]
+  }
+}

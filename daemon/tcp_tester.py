@@ -1,10 +1,10 @@
 import socket
 
-from daemon import config
-
+from daemon.config import Config
+config = Config()
 while True:
     sock = socket.socket()
-    sock.connect((config.TCP_HOST, config.TCP_PORT))
+    sock.connect((config.tcp_host, config.tcp_port))
     command = input('>')
     cmdstr = command.encode('utf-8')
     prefix = str(len(cmdstr)).zfill(5)

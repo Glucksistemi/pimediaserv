@@ -1,6 +1,8 @@
 import json
 import re
-
+from config import Config
+config = Config() #TODO: think about architecture with single Config object
+# obsolete arrays:
 SIMPLE_COMMANDS = [
     'pause',
     'sub_select',
@@ -57,7 +59,7 @@ class PropertyHandler(Command):
     need_answer = True
 
     def form_command(self):
-        if self.args.get('property','') not in PROPERTIES:
+        if self.args.get('property','') not in config.allowed_commands['properties']:
             return ''
         if self.args.get('mode','get') == 'get':
             return 'pausing_keep_force get_property '+self.args.get('property','')
@@ -78,9 +80,9 @@ class PropertyHandler(Command):
 
 
 def get_command_object(command, args):
-    if command in SIMPLE_COMMANDS:
+    if command in config.allowed_commands['simple_commands']:
         return Command(args, command)
-    if command in VALUED_COMMANDS:
+    if command in config.allowed_commands['valued_commands']:
         return ValuedCommand(args,command)
     if command == 'property':
         return PropertyHandler(args)
